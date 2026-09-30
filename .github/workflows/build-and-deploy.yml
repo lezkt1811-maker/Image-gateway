@@ -33,9 +33,30 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  check-live:
+    # After publishing, open the live pages to prove they are really there.
+    needs: deploy
+    runs-on: ubuntu-latest
+    env:
+      BASE: ${{ needs.deploy.outputs.page_url }}
+    steps:
+      - name: Live home page loads
+        run: |
+          for i in 1 2 3 4 5 6 7 8; do curl -fsS -o /dev/null "${BASE}?ci=${{ github.run_id }}" && exit 0; sleep 15; done; exit 1
+      - name: Live sitemap loads
+        run: |
+          for i in 1 2 3 4 5 6 7 8; do curl -fsS -o /dev/null "${BASE}sitemap.xml?ci=${{ github.run_id }}" && exit 0; sleep 15; done; exit 1
+      - name: Live Ophiuchus page loads
+        run: |
+          for i in 1 2 3 4 5 6 7 8; do curl -fsS -o /dev/null "${BASE}ophiuchus/ophiuchus-serpent-bearer/?ci=${{ github.run_id }}" && exit 0; sleep 15; done; exit 1
+      - name: Show what the live home page contains
+        run: curl -fsS "${BASE}?ci=${{ github.run_id }}" | grep -o '<title>[^<]*</title>'
