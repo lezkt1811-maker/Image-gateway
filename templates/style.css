@@ -1,0 +1,22 @@
+:root{--bg:#0f0d1a;--fg:#ece8f5;--muted:#a59fbd;--accent:#c9a3ff;--card:#191529}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.6 Georgia,"Times New Roman",serif}
+a{color:var(--accent)}
+.site-header,.site-footer{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{font-size:1.15rem;letter-spacing:.06em;text-decoration:none;color:var(--fg)}
+.site-header nav a{margin-left:1rem}
+.site-footer{color:var(--muted);font-size:.85rem;justify-content:center;margin-top:3rem}
+main{max-width:1000px;margin:0 auto;padding:0 1.25rem}
+.topic{text-transform:uppercase;letter-spacing:.15em;font-size:.8rem;color:var(--accent);margin:1.5rem 0 0}
+.crumbs{font-size:.85rem;color:var(--muted);margin:1rem 0 0}
+h1{font-weight:normal;font-size:2rem;line-height:1.2;margin:.3rem 0 1rem}
+figure{margin:0}
+figure img{width:100%;height:auto;display:block;border-radius:6px}
+figcaption{color:var(--muted);font-size:.9rem;margin-top:.6rem}
+.text{max-width:680px}
+.lead{font-size:1.15rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.card{background:var(--card);border-radius:6px;overflow:hidden;text-decoration:none;color:var(--fg)}
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.card span{display:block;padding:.6rem .8rem;font-size:.9rem}
+.related h2{font-weight:normal;font-size:1.2rem;margin-top:2.5rem}

@@ -1,0 +1,19 @@
+{
+  "ophiuchus": {
+    "title": "Ophiuchus",
+    "headline": "Ophiuchus: The 13th Zodiac Sign",
+    "default_slug": "ophiuchus-13th-zodiac-sign",
+    "alt_default": "Ophiuchus, the 13th zodiac sign, illustrated as the serpent bearer in original astrology artwork.",
+    "summary": "Ophiuchus, the serpent bearer, explored through a 13-sign astrology framework.",
+    "about": [
+      "Ophiuchus is a constellation that sits between Scorpius and Sagittarius. It is traditionally pictured as a figure holding a serpent, which is where its name, the serpent bearer, comes from.",
+      "The Sun passes through the constellation Ophiuchus every year, roughly from late November to mid-December. That is why some astrologers work with a 13-sign zodiac that includes Ophiuchus alongside the familiar twelve."
+    ]
+  },
+  "_default": {
+    "headline": "{title}",
+    "alt_default": "Original astrology artwork about {title}.",
+    "summary": "Original artwork exploring {title}.",
+    "about": []
+  }
+}
