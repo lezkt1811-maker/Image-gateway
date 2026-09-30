@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "site"
 EXTS = {".jpg", ".jpeg", ".png", ".webp"}
 JUNK_WORDS = {"img", "image", "images", "final", "copy", "ai", "untitled", "screenshot",
-              "photo", "pic", "picture", "dsc", "edit", "edited", "new", "download"}
+              "photo", "pic", "picture", "dsc", "edit", "edited", "new", "download", "file"}
 MAX_SIDE, THUMB_SIDE = 1800, 600
 
 
@@ -41,6 +41,8 @@ def meaningful_words(stem, category):
     keep = []
     for w in words_of(stem):
         lw = w.lower()
+        if re.search(r"\d", lw) and re.search(r"[a-z]", lw) and len(lw) >= 6:
+            continue  # random codes like d08881f5b362 are not descriptive
         base = re.sub(r"\d+", "", lw)
         if not base or base in JUNK_WORDS or lw == category:
             continue
@@ -113,7 +115,9 @@ def main():
 
     # ---- 1. find and process pictures -------------------------------------
     pages, used = [], set()
-    for folder in sorted(p for p in (ROOT / "incoming").iterdir() if p.is_dir()):
+    incoming = ROOT / "incoming"
+    folders = sorted(p for p in incoming.iterdir() if p.is_dir()) if incoming.exists() else []
+    for folder in folders:
         cat = slugify(folder.name)
         info = cat_info(cats, cat)
         for src in sorted(folder.iterdir()):

@@ -55,8 +55,11 @@ jobs:
       - name: Live sitemap loads
         run: |
           for i in 1 2 3 4 5 6 7 8; do curl -fsS -o /dev/null "${BASE}sitemap.xml?ci=${{ github.run_id }}" && exit 0; sleep 15; done; exit 1
-      - name: Live Ophiuchus page loads
+      - name: Newest page listed in the sitemap loads
         run: |
-          for i in 1 2 3 4 5 6 7 8; do curl -fsS -o /dev/null "${BASE}ophiuchus/ophiuchus-serpent-bearer/?ci=${{ github.run_id }}" && exit 0; sleep 15; done; exit 1
-      - name: Show what the live home page contains
-        run: curl -fsS "${BASE}?ci=${{ github.run_id }}" | grep -o '<title>[^<]*</title>'
+          for i in 1 2 3 4 5 6 7 8; do
+            last=$(curl -fsS "${BASE}sitemap.xml?ci=${{ github.run_id }}" | grep -o '<loc>[^<]*</loc>' | sed 's/<[^>]*>//g' | tail -1)
+            [ -n "$last" ] && curl -fsS -o /dev/null "${last}?ci=${{ github.run_id }}" && exit 0
+            sleep 15
+          done
+          exit 1
