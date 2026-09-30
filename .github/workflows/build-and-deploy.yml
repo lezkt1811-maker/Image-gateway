@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -23,10 +23,24 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pillow
+      - name: Write descriptions for new pictures (free AI, optional)
+        run: python scripts/describe.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       - run: python scripts/build.py
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+      - name: Save new descriptions back into the folder
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "image-robot"
+          git config user.email "image-robot@users.noreply.github.com"
+          git add incoming
+          if ! git diff --cached --quiet; then
+            git commit -m "Add picture descriptions written by the robot"
+            git pull --rebase -q origin main && git push -q origin HEAD:main || echo "Could not save descriptions this time; they will be written again next run."
+          fi
 
   deploy:
     # Only the main branch goes live. Other branches just prove the build works.

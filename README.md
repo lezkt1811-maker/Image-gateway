@@ -15,6 +15,16 @@ A new topic is just a new folder inside `incoming` (for example `incoming/lilith
 ### Optional: say what the picture shows
 Upload a text file with the **same name** as the picture (`my-art.jpg` → `my-art.txt`) containing one or two sentences describing it. The robot uses your words for the page and for the picture's description. If you skip it, it uses a general description of the topic, so a real sentence is always better.
 
+### Automatic descriptions (free AI, optional)
+If you added a free Google key (see below), the robot looks at each new picture that has no `.txt` file, writes a short description itself, and saves it as a `.txt` file next to the picture. You can open that file later and change the words, and your version is used from then on. If the free allowance runs out or the service is down, the page simply gets the general topic description instead. Nothing breaks.
+
+**One-time setup for this:**
+1. Go to https://aistudio.google.com/apikey and sign in with a Google account. Tap **Create API key** and copy it. Do NOT turn on billing.
+2. In this repository open **Settings → Secrets and variables → Actions → New repository secret**.
+3. Name it `GEMINI_API_KEY`, paste the key as the value, and save. Never paste the key into a file or a chat.
+
+Note: pictures that get a description are sent to Google for that step. On Google's free plan they may use what is sent to improve their products.
+
 ### Picture names
 `IMG_9283.jpg` works, but a name like `serpent-bearer.jpg` gives the page a better title and address.
 
