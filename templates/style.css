@@ -1,22 +1,93 @@
-:root{--bg:#0f0d1a;--fg:#ece8f5;--muted:#a59fbd;--accent:#c9a3ff;--card:#191529}
+:root{
+  --bg:#050308;--fg:#fff1e3;--muted:#e0b48f;--accent:#ff6a00;--accent2:#ff9d2e;
+  --card:#120a07;--line:rgba(255,106,0,.38);--glow:rgba(255,106,0,.55);
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:18px/1.6 Georgia,"Times New Roman",serif}
-a{color:var(--accent)}
+html{background:var(--bg)}
+body{margin:0;background:transparent;color:var(--fg);font:18px/1.6 Georgia,"Times New Roman",serif;position:relative;min-height:100vh}
+
+/* night sky: two layers of tiny stars, the second one twinkles */
+body::before,body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
+body::before{
+  background-image:
+   radial-gradient(1.8px 1.8px at 289px 227px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 228px 168px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 185px 142px,#ff9d2e,transparent 60%),
+   radial-gradient(1.8px 1.8px at 291px 77px,#ff9d2e,transparent 60%),
+   radial-gradient(1.8px 1.8px at 235px 282px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 158px 111px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 275px 190px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 198px 243px,#ffd2a6,transparent 60%),
+   radial-gradient(1.4px 1.4px at 151px 210px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 259px 289px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 128px 107px,#ffd2a6,transparent 60%),
+   radial-gradient(1.4px 1.4px at 75px 45px,#ff9d2e,transparent 60%),
+   radial-gradient(2.2px 2.2px at 245px 207px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 225px 30px,#fff,transparent 60%),
+   radial-gradient(1.4px 1.4px at 80px 262px,#ff9d2e,transparent 60%),
+   radial-gradient(1.8px 1.8px at 137px 89px,#ff9d2e,transparent 60%),
+   radial-gradient(1.8px 1.8px at 136px 187px,#fff,transparent 60%),
+   radial-gradient(1.4px 1.4px at 199px 274px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 129px 262px,#fff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 29px 27px,#ffd2a6,transparent 60%),
+   radial-gradient(2.2px 2.2px at 182px 101px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 106px 92px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 123px 93px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 227px 286px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 233px 183px,#fff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 277px 9px,#fff,transparent 60%);
+  background-size:300px 300px;
+}
+body::after{
+  background-image:
+   radial-gradient(2.2px 2.2px at 171px 179px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 262px 294px,#ff9d2e,transparent 60%),
+   radial-gradient(2.2px 2.2px at 272px 250px,#fff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 350px 114px,#ffd2a6,transparent 60%),
+   radial-gradient(2.2px 2.2px at 24px 200px,#ff9d2e,transparent 60%),
+   radial-gradient(2.6px 2.6px at 373px 88px,#ff9d2e,transparent 60%),
+   radial-gradient(2.6px 2.6px at 82px 140px,#ffd2a6,transparent 60%),
+   radial-gradient(2.6px 2.6px at 358px 118px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 225px 309px,#fff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 190px 133px,#ff9d2e,transparent 60%),
+   radial-gradient(2.6px 2.6px at 155px 227px,#fff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 336px 187px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 27px 170px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 243px 52px,#fff,transparent 60%);
+  background-size:410px 410px;
+  animation:twinkle 6s ease-in-out infinite alternate;
+}
+@keyframes twinkle{from{opacity:.25}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){body::after{animation:none}}
+
+a{color:var(--accent2)}
+a:hover{color:#fff;text-shadow:0 0 10px var(--glow)}
 .site-header,.site-footer{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-.brand{font-size:1.15rem;letter-spacing:.06em;text-decoration:none;color:var(--fg)}
+.brand{font-size:1.2rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--accent);text-shadow:0 0 6px var(--glow),0 0 18px rgba(255,106,0,.35)}
 .site-header nav a{margin-left:1rem}
-.site-footer{color:var(--muted);font-size:.85rem;justify-content:center;margin-top:3rem}
+
+/* crystal / moon / diamond / star divider */
+.site-header::after,.site-footer::before{
+  content:"";display:block;width:100%;height:28px;flex-basis:100%;order:9;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='28' viewBox='0 0 260 28' fill='none' stroke='%23ff6a00' stroke-width='1.3' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M26 4a10 10 0 1 0 0 20a8 8 0 1 1 0-20z'/%3E%3Cpath d='M70 3l2.2 8.8L81 14l-8.8 2.2L70 25l-2.2-8.8L59 14l8.8-2.2z'/%3E%3Cpath d='M115 5l8 9-8 9-8-9zM107 14h16M115 5l-4 9 4 9 4-9z'/%3E%3Cpath d='M165 3l7 6v10l-7 6-7-6V9zM158 9h14M165 3l-4 6 4 16 4-16z'/%3E%3Cpath d='M215 8l1.4 4.6L221 14l-4.6 1.4L215 20l-1.4-4.6L209 14l4.6-1.4z'/%3E%3Cpath d='M245 8a6 6 0 1 0 0 12a4.6 4.6 0 1 1 0-12z'/%3E%3C/svg%3E") repeat-x center;
+  filter:drop-shadow(0 0 4px var(--glow));opacity:.9;
+}
+.site-footer{color:var(--muted);font-size:.85rem;justify-content:center;margin-top:3rem;text-align:center}
+.site-footer p{margin:0;flex-basis:100%}
+.site-footer::before{order:-1}
+
 main{max-width:1000px;margin:0 auto;padding:0 1.25rem}
-.topic{text-transform:uppercase;letter-spacing:.15em;font-size:.8rem;color:var(--accent);margin:1.5rem 0 0}
+.topic{text-transform:uppercase;letter-spacing:.2em;font-size:.8rem;color:var(--accent2);margin:1.5rem 0 0;text-shadow:0 0 8px var(--glow)}
 .crumbs{font-size:.85rem;color:var(--muted);margin:1rem 0 0}
-h1{font-weight:normal;font-size:2rem;line-height:1.2;margin:.3rem 0 1rem}
+h1{font-weight:normal;font-size:2rem;line-height:1.2;margin:.3rem 0 1rem;color:#fff;text-shadow:0 0 8px var(--glow),0 0 28px rgba(255,106,0,.3)}
 figure{margin:0}
-figure img{width:100%;height:auto;display:block;border-radius:6px}
-figcaption{color:var(--muted);font-size:.9rem;margin-top:.6rem}
+figure img{width:100%;height:auto;display:block;border-radius:6px;box-shadow:0 0 0 1px var(--line),0 0 32px rgba(255,106,0,.28)}
+figcaption{color:var(--muted);font-size:.9rem;margin-top:.8rem}
 .text{max-width:680px}
 .lead{font-size:1.15rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem}
-.card{background:var(--card);border-radius:6px;overflow:hidden;text-decoration:none;color:var(--fg)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;text-decoration:none;color:var(--fg);transition:box-shadow .2s,border-color .2s}
+.card:hover{border-color:var(--accent);box-shadow:0 0 22px var(--glow)}
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
 .card span{display:block;padding:.6rem .8rem;font-size:.9rem}
-.related h2{font-weight:normal;font-size:1.2rem;margin-top:2.5rem}
+.related h2{font-weight:normal;font-size:1.2rem;margin-top:2.5rem;color:var(--accent2);text-shadow:0 0 8px var(--glow)}

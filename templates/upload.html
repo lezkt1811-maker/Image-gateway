@@ -9,10 +9,10 @@
 <style>
 *{box-sizing:border-box}
  label{display:block;margin:1.1rem 0 .3rem;color:var(--muted);font-size:.9rem}
- input[type=text],input[type=password],select,textarea{width:100%;padding:.7rem;border-radius:6px;border:1px solid #3a3358;background:var(--card);color:var(--fg);font:inherit;font-size:1rem}
+ input[type=text],input[type=password],select,textarea{width:100%;padding:.7rem;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:1rem}
  textarea{min-height:5rem}
- button{margin-top:1.4rem;padding:.9rem 1.4rem;border:0;border-radius:6px;background:var(--accent);color:#1a1230;font:inherit;font-weight:bold;font-size:1.05rem;width:100%}
- button.link{background:none;color:var(--muted);text-decoration:underline;width:auto;font-weight:normal;font-size:.85rem;padding:0;margin-top:1.5rem}
+ button{box-shadow:0 0 18px var(--glow);margin-top:1.4rem;padding:.9rem 1.4rem;border:0;border-radius:6px;background:var(--accent);color:#120600;font:inherit;font-weight:bold;font-size:1.05rem;width:100%}
+ button.link{box-shadow:none;background:none;color:var(--muted);text-decoration:underline;width:auto;font-weight:normal;font-size:.85rem;padding:0;margin-top:1.5rem}
  button[disabled]{opacity:.5}
  #status{margin-top:1.2rem;padding:.8rem 1rem;border-radius:6px;background:var(--card);display:none}
  #status.err{border-left:4px solid #ff7b7b} #status.ok{border-left:4px solid #7be0a0}
