@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Upload artwork | {{site_name}}</title>
+<link rel="stylesheet" href="{{base}}/style.css">
+<style>
+*{box-sizing:border-box}
+ label{display:block;margin:1.1rem 0 .3rem;color:var(--muted);font-size:.9rem}
+ input[type=text],input[type=password],select,textarea{width:100%;padding:.7rem;border-radius:6px;border:1px solid #3a3358;background:var(--card);color:var(--fg);font:inherit;font-size:1rem}
+ textarea{min-height:5rem}
+ button{margin-top:1.4rem;padding:.9rem 1.4rem;border:0;border-radius:6px;background:var(--accent);color:#1a1230;font:inherit;font-weight:bold;font-size:1.05rem;width:100%}
+ button.link{background:none;color:var(--muted);text-decoration:underline;width:auto;font-weight:normal;font-size:.85rem;padding:0;margin-top:1.5rem}
+ button[disabled]{opacity:.5}
+ #status{margin-top:1.2rem;padding:.8rem 1rem;border-radius:6px;background:var(--card);display:none}
+ #status.err{border-left:4px solid #ff7b7b} #status.ok{border-left:4px solid #7be0a0}
+ ol{padding-left:1.2rem} li{margin:.4rem 0}
+ .note{color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<header class="site-header"><a class="brand" href="{{base}}/">{{site_name}}</a></header>
+<main>
+<h1>Upload artwork</h1>
+
+<section id="setup" hidden>
+  <p class="lead">One-time setup. This lets this page add pictures for you. You only do this once on this phone.</p>
+  <ol>
+    <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">this GitHub page</a>.</li>
+    <li>Name: <b>image robot</b>. Expiration: pick the longest.</li>
+    <li>Under <b>Repository access</b> choose <b>Only select repositories</b>, then pick <b>{{repo_name}}</b>.</li>
+    <li>Under <b>Permissions → Repository permissions</b>, set <b>Contents</b> to <b>Read and write</b>.</li>
+    <li>Tap <b>Generate token</b>, copy it, and paste it below.</li>
+  </ol>
+  <label for="tok">Paste your token here</label>
+  <input id="tok" type="password" autocomplete="off" autocapitalize="off" spellcheck="false">
+  <button id="saveTok" type="button">Save and continue</button>
+  <p class="note">The token is kept only on this phone. It can only add files to this one project. Never share it.</p>
+</section>
+
+<section id="uploader" hidden>
+  <p class="lead">Pick your picture. The robot does the rest.</p>
+  <label for="file">Picture (JPG, PNG or WEBP)</label>
+  <input id="file" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+
+  <label for="topic">Topic</label>
+  <select id="topic"></select>
+  <input id="newTopic" type="text" placeholder="New topic, e.g. lilith" hidden>
+
+  <label for="title">Short name (optional)</label>
+  <input id="title" type="text" placeholder="e.g. moon serpent">
+
+  <div id="descWrap">
+    <label for="desc">What the picture shows (optional)</label>
+    <textarea id="desc" placeholder="Leave empty and the robot will write it for you."></textarea>
+  </div>
+
+  <button id="go" type="button">Upload</button>
+  <button id="forget" class="link" type="button">Forget my token on this phone</button>
+</section>
+
+<div id="status"></div>
+</main>
+<script>
+const REPO = "{{repo}}", BRANCH = "{{branch}}", BASE = "{{base}}";
+const TOPICS = {{topics_json}};
+const KEY = "imageRobotToken";
+let tok = "";
+try { tok = localStorage.getItem(KEY) || ""; } catch (e) {}
+const $ = id => document.getElementById(id);
+
+function say(msg, kind, html) {
+  const s = $("status");
+  s.className = kind || ""; s.style.display = "block";
+  if (html) s.innerHTML = msg; else s.textContent = msg;
+}
+function show() { $("setup").hidden = !!tok; $("uploader").hidden = !tok; }
+function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+function toB64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(",")[1]);
+    r.onerror = () => rej(new Error("Could not read that file."));
+    r.readAsDataURL(file);
+  });
+}
+function textB64(t) { return btoa(unescape(encodeURIComponent(t))); }
+
+async function api(method, path, body) {
+  const path2 = path.split("/").map(encodeURIComponent).join("/");
+  return fetch("https://api.github.com/repos/" + REPO + path2, {
+    method,
+    headers: { Authorization: "Bearer " + tok, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined
+  });
+}
+async function put(path, b64, msg) {
+  return api("PUT", "/contents/" + path, { message: msg, content: b64, branch: BRANCH });
+}
+function explain(res) {
+  if (res.status === 401) return "GitHub did not accept the token. It may have expired. Tap “Forget my token” and set it up again.";
+  if (res.status === 403 || res.status === 404) return "The token cannot add files to this project. When you created it, it must be for " + REPO.split("/")[1] + " with Contents set to Read and write.";
+  return "GitHub said no (code " + res.status + ").";
+}
+
+TOPICS.forEach(t => { const o = document.createElement("option"); o.value = t; o.textContent = t.replace(/-/g, " "); $("topic").appendChild(o); });
+const other = document.createElement("option"); other.value = "__new"; other.textContent = "Other (new topic)…"; $("topic").appendChild(other);
+$("topic").onchange = () => { $("newTopic").hidden = $("topic").value !== "__new"; };
+$("file").onchange = () => { $("descWrap").hidden = $("file").files.length > 1; };
+
+$("saveTok").onclick = async () => {
+  const t = $("tok").value.trim();
+  if (!t) return say("Paste the token first.", "err");
+  tok = t;
+  say("Checking…");
+  try {
+    const res = await api("GET", "");
+    if (!res.ok) { tok = ""; return say(explain(res), "err"); }
+  } catch (e) { tok = ""; return say("Could not reach GitHub. Check your connection.", "err"); }
+  try { localStorage.setItem(KEY, t); } catch (e) {}
+  $("tok").value = ""; $("status").style.display = "none"; show();
+};
+$("forget").onclick = () => { tok = ""; try { localStorage.removeItem(KEY); } catch (e) {} show(); $("status").style.display = "none"; };
+
+$("go").onclick = async () => {
+  const files = [...$("file").files];
+  if (!files.length) return say("Choose a picture first.", "err");
+  let topic = $("topic").value === "__new" ? slug($("newTopic").value) : $("topic").value;
+  if (!topic) return say("Type a name for the new topic.", "err");
+  $("go").disabled = true;
+  let done = 0, lastTopic = topic;
+  try {
+    for (const f of files) {
+      const m = f.name.match(/\.(jpe?g|png|webp)$/i);
+      if (!m) { say("“" + f.name + "” is not a JPG, PNG or WEBP picture, so it was skipped.", "err"); continue; }
+      const ext = m[1].toLowerCase();
+      let base = slug(files.length === 1 && $("title").value.trim() ? $("title").value : f.name.replace(/\.[^.]+$/, "")) || "picture";
+      if (files.length === 1 && $("title").value.trim() && !base.startsWith(topic)) base = topic + "-" + base;
+      say("Uploading " + (done + 1) + " of " + files.length + "…");
+      const b64 = await toB64(f);
+      let name = base, res;
+      for (let tries = 0; tries < 2; tries++) {
+        res = await put("incoming/" + topic + "/" + name + "." + ext, b64, "Upload " + name + "." + ext + " from the upload page");
+        if (res.status !== 422) break;
+        name = base + "-" + Math.random().toString(36).slice(2, 6);
+      }
+      if (!res.ok) { say(explain(res), "err"); $("go").disabled = false; return; }
+      const desc = $("desc").value.trim();
+      if (files.length === 1 && desc) {
+        const r2 = await put("incoming/" + topic + "/" + name + ".txt", textB64(desc + "\n"), "Add description for " + name);
+        if (!r2.ok) { say("The picture went up, but the description did not save. " + explain(r2), "err"); $("go").disabled = false; return; }
+      }
+      done++;
+    }
+  } catch (e) { say("Something went wrong: " + e.message, "err"); $("go").disabled = false; return; }
+  $("go").disabled = false;
+  if (done) {
+    say("Done! " + done + " picture" + (done > 1 ? "s" : "") + " uploaded. The robot is working on it now. " +
+      "Give it about a minute, then look here: <a href='" + BASE + "/" + lastTopic + "/'>your " + lastTopic.replace(/-/g, " ") + " page</a>. " +
+      "(Progress: <a href='https://github.com/" + REPO + "/actions' target='_blank' rel='noopener'>watch for the green checkmark</a>.)", "ok", true);
+    $("file").value = ""; $("title").value = ""; $("desc").value = ""; $("descWrap").hidden = false;
+  }
+};
+show();
+</script>
+</body>
+</html>

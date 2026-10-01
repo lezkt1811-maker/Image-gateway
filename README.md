@@ -2,7 +2,10 @@
 
 Drop a picture in a folder. The robot gives it its own web page, tells Google where it lives, and publishes it.
 
-## How to add a picture (works from your phone)
+## Easiest way: the upload page
+Open `your-site-address/upload/` (for example https://lezkt1811-maker.github.io/Image-gateway/upload/), pick your picture, tap **Upload**. The first time, the page asks for a one-time GitHub token (the page walks you through making it). After that it's just: choose picture, tap Upload. Save the page to your phone's home screen. The page is private-ish: it is not linked anywhere and tells search engines to ignore it, and it does nothing without your token.
+
+## The other way: through GitHub's folders (works from your phone)
 
 1. Open this repository on GitHub.
 2. Open the folder `incoming`, then the topic folder (for example `ophiuchus`).

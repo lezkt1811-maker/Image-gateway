@@ -4,5 +4,7 @@
   "site_description": "13-sign astrology and celestial exploration",
   "main_site_url": "",
   "_help": "Change the three values above (and optionally main_site_url, the link back to your main website) any time. Every page is rebuilt with the new values on the next upload. site_url must be the address where these pages live, with no slash at the end. ai_model is the free Google AI model that writes picture descriptions; change it only if Google retires it.",
-  "ai_model": "gemini-2.5-flash-lite"
+  "ai_model": "gemini-2.5-flash-lite",
+  "github_repo": "lezkt1811-maker/Image-gateway",
+  "upload_branch": "main"
 }

@@ -237,6 +237,17 @@ def main():
          content=render("list-page.html", dict(
              heading=esc(name), intro=esc(desc), cards=cards(pages), main_link=main_link)))
 
+    # ---- 3b. private upload page (not linked, not in the sitemap) ---------
+    repo = site.get("github_repo", "")
+    if repo:
+        topics = sorted({c for c in cats if not c.startswith("_")} | {c for c in by_cat})
+        up = OUT / "upload"
+        up.mkdir(exist_ok=True)
+        (up / "index.html").write_text(render("upload.html", dict(
+            site_name=esc(name), base=base, repo=esc(repo), repo_name=esc(repo.split("/")[-1]),
+            branch=esc(site.get("upload_branch", "main")),
+            topics_json=json.dumps(topics))), encoding="utf-8")
+
     # ---- 4. sitemap and robots.txt ----------------------------------------
     urls = [f"  <url><loc>{site_url}/</loc><lastmod>{date.today().isoformat()}</lastmod></url>"]
     urls += [f"  <url><loc>{site_url}/{c}/</loc></url>" for c in by_cat]
