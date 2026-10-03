@@ -78,13 +78,22 @@ function say(msg, kind, html) {
 }
 function show() { $("setup").hidden = !!tok; $("uploader").hidden = !tok; }
 function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
-function toB64(file) {
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(String(r.result).split(",")[1]);
-    r.onerror = () => rej(new Error("Could not read that file."));
-    r.readAsDataURL(file);
-  });
+async function toB64(file) {
+  let buf;
+  try { buf = await file.arrayBuffer(); }
+  catch (e) {
+    buf = await new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result);
+      r.onerror = () => rej(new Error("unreadable"));
+      r.readAsArrayBuffer(file);
+    });
+  }
+  if (!buf || buf.byteLength < 100) throw new Error("empty");
+  const bytes = new Uint8Array(buf);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
 }
 function textB64(t) { return btoa(unescape(encodeURIComponent(t))); }
 
@@ -139,7 +148,12 @@ $("go").onclick = async () => {
       let base = slug(files.length === 1 && $("title").value.trim() ? $("title").value : f.name.replace(/\.[^.]+$/, "")) || "picture";
       if (files.length === 1 && $("title").value.trim() && !base.startsWith(topic)) base = topic + "-" + base;
       say("Uploading " + (done + 1) + " of " + files.length + "…");
-      const b64 = await toB64(f);
+      let b64;
+      try { b64 = await toB64(f); }
+      catch (e) {
+        say("Your phone would not let this page read \u201c" + f.name + "\u201d. It may be stored only online (Google Photos or Drive) or still saving. Open it in your gallery, save or download a copy onto your phone, then choose that copy and try again.", "err");
+        $("go").disabled = false; return;
+      }
       let name = base, res;
       for (let tries = 0; tries < 2; tries++) {
         res = await put("incoming/" + topic + "/" + name + "." + ext, b64, "Upload " + name + "." + ext + " from the upload page");
