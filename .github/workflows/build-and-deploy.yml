@@ -10,13 +10,16 @@ permissions:
   pages: write
   id-token: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -46,7 +49,7 @@ jobs:
     # Only the main branch goes live. Other branches just prove the build works.
     if: github.ref == 'refs/heads/main'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     environment:
@@ -59,7 +62,7 @@ jobs:
   check-live:
     # After publishing, open the live pages to prove they are really there.
     needs: deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       BASE: ${{ needs.deploy.outputs.page_url }}
     steps:
