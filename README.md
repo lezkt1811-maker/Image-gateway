@@ -28,6 +28,9 @@ If you added a free Google key (see below), the robot looks at each new picture 
 
 Note: pictures that get a description are sent to Google for that step. On Google's free plan they may use what is sent to improve their products.
 
+### Page titles
+The robot's AI also suggests a short page title and saves it as the first line of the `.txt` file, like `Title: Ophiuchus Orbit Map`. To change a title, open the `.txt` file and edit that line. Put a `Title:` line at the top of your own description file to choose the title yourself. If there is no title line, the title comes from the picture's file name.
+
 ### Picture names
 `IMG_9283.jpg` works, but a name like `serpent-bearer.jpg` gives the page a better title and address.
 

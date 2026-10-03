@@ -13,12 +13,15 @@ ROOT = Path(__file__).resolve().parent.parent
 EXTS = {".jpg", ".jpeg", ".png", ".webp"}
 MAX_PER_RUN = 10  # protects the free daily allowance
 PROMPT = (
-    "You are writing the caption for an original astrology artwork on a website. "
-    "Topic: {topic}. Describe only what you can actually see in the picture, in plain, "
-    "natural English, in 2 or 3 sentences. The FIRST sentence must be under 120 characters "
-    "and work as alt text for a blind reader. If there is readable text in the artwork, "
-    "mention it. Do not use hashtags, keyword lists, markdown, or quotation marks around "
-    "the whole answer. Do not invent meanings the picture does not show."
+    "You are writing the page text for an original astrology artwork on a website. "
+    "Topic: {topic}. Reply in exactly this format. Line 1: TITLE: followed by a short, "
+    "natural page title of 2 to 5 words that fits what the picture shows and includes the "
+    "topic name if it reads naturally (no quotes, no trailing period). Then a blank line, "
+    "then the description. Describe only what you can actually see, in plain, natural "
+    "English, in 2 or 3 sentences. The FIRST sentence of the description must be under "
+    "120 characters and work as alt text for a blind reader. If there is readable text in "
+    "the artwork, mention it. Do not use hashtags, keyword lists, markdown, or quotation "
+    "marks around the whole answer. Do not invent meanings the picture does not show."
 )
 
 
@@ -31,9 +34,19 @@ def small_jpeg_b64(path):
 
 
 def clean(text):
-    text = re.sub(r"[*_#`>]+", "", text or "")
-    text = " ".join(text.split()).strip(" \"'")
-    return text[:600].rsplit(" ", 1)[0] if len(text) > 600 else text
+    """Return 'Title: X\n\ndescription' (title only if the AI gave a sensible one)."""
+    text = re.sub(r"[*_#`>]+", "", text or "").strip()
+    title = ""
+    m = re.match(r"(?i)\s*title:[ \t]*(.+?)[ \t]*(?:\n|$)", text)
+    if m:
+        title = m.group(1).strip(" \"'.")
+        text = text[m.end():]
+    body = " ".join(text.split()).strip(" \"'")
+    if len(body) > 600:
+        body = body[:600].rsplit(" ", 1)[0]
+    if not (3 <= len(title) <= 60):
+        title = ""
+    return (f"Title: {title}\n\n{body}" if title else body)
 
 
 API = "https://generativelanguage.googleapis.com/v1beta"
@@ -120,7 +133,7 @@ def main():
             if not text:
                 print(f"Could not describe {img.name}: {last_error}. Using the general description.")
                 continue
-            if len(text) < 20:
+            if len(text.split("\n\n")[-1]) < 20:
                 print(f"Description for {img.name} came back too short; skipping.")
                 continue
             note.write_text(text + "\n", encoding="utf-8")

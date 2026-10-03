@@ -128,8 +128,27 @@ def main():
             except Exception as e:
                 print(f"SKIPPED {src.name}: not a readable picture ({e})", file=sys.stderr)
                 continue
+            # optional description file; its first line may be "Title: ..."
+            note = src.with_suffix(".txt")
+            raw = note.read_text(encoding="utf-8").strip() if note.exists() else ""
+            text_title = None
+            m = re.match(r"(?i)title:[ \t]*(.+?)[ \t]*(?:\n|$)", raw)
+            if m:
+                text_title = m.group(1).strip().strip("\"'")[:80] or None
+                raw = raw[m.end():].strip()
+            if raw:
+                description = " ".join(raw.split())
+                alt = first_sentence(description)
+            else:
+                alt = info["alt_default"]
+                description = info["summary"]
+
             words = meaningful_words(src.stem, cat)
-            if words:
+            if text_title:
+                title = text_title
+                tslug = slugify(text_title)
+                slug = tslug if tslug.startswith(cat) else slugify(f"{cat}-{tslug}")
+            elif words:
                 slug = slugify(f"{cat}-{'-'.join(words)}")
                 title = " ".join(w.capitalize() for w in [info["title"], *words])
             else:
@@ -139,14 +158,6 @@ def main():
             if slug in used:
                 slug += "-" + hashlib.sha1(src.read_bytes()).hexdigest()[:6]
             used.add(slug)
-
-            note = src.with_suffix(".txt")
-            if note.exists() and note.read_text(encoding="utf-8").strip():
-                description = " ".join(note.read_text(encoding="utf-8").split())
-                alt = first_sentence(description)
-            else:
-                alt = info["alt_default"]
-                description = info["summary"]
 
             w, h = make_web_images(src, OUT / "images" / cat, slug)
             pages.append(dict(cat=cat, info=info, slug=slug, title=title, alt=alt,
