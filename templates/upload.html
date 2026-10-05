@@ -105,14 +105,49 @@ function textB64(t) { return btoa(unescape(encodeURIComponent(t))); }
 async function api(method, path, body) {
   const parts = path.split("?");
   const path2 = parts[0].split("/").map(encodeURIComponent).join("/") + (parts[1] ? "?" + parts[1] : "");
-  return fetch("https://api.github.com/repos/" + REPO + path2, {
+  const go = () => fetch("https://api.github.com/repos/" + REPO + path2, {
     method,
     headers: { Authorization: "Bearer " + tok, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined
   });
+  if (method !== "GET") return go();
+  let err;
+  for (let i = 0; i < 3; i++) {            // reading is safe to repeat if the connection drops
+    try { return await go(); } catch (e) { err = e; await new Promise(r => setTimeout(r, 1000 * (i + 1))); }
+  }
+  throw err;
 }
 async function put(path, b64, msg) {
-  return api("PUT", "/contents/" + path, { message: msg, content: b64, branch: BRANCH });
+  let err;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await api("PUT", "/contents/" + path, { message: msg, content: b64, branch: BRANCH });
+      // a retry that says "already exists" means the first try actually got through
+      if (i > 0 && res.status === 422) return { ok: true, status: 201 };
+      return res;
+    } catch (e) {
+      err = e;
+      say("Connection dropped. Trying again (" + (i + 1) + " of 3)\u2026");
+      await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+    }
+  }
+  throw err;
+}
+// Big pictures are shrunk to a still-large JPEG so they upload reliably on a phone connection.
+async function prepare(file, ext) {
+  if (file.size <= 3 * 1024 * 1024) return { blob: file, ext: ext, shrunk: false };
+  try {
+    let bmp;
+    try { bmp = await createImageBitmap(file, { imageOrientation: "from-image" }); }
+    catch (e) { bmp = await createImageBitmap(file); }
+    const scale = Math.min(1, 2600 / Math.max(bmp.width, bmp.height));
+    const w = Math.round(bmp.width * scale), h = Math.round(bmp.height * scale);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const g = c.getContext("2d"); g.fillStyle = "#070B14"; g.fillRect(0, 0, w, h); g.drawImage(bmp, 0, 0, w, h);
+    const blob = await new Promise(r => c.toBlob(r, "image/jpeg", 0.92));
+    if (blob && blob.size < file.size) return { blob: blob, ext: "jpg", shrunk: true };
+  } catch (e) {}
+  return { blob: file, ext: ext, shrunk: false };
 }
 function explain(res) {
   if (res.status === 401) return "GitHub did not accept the token. It may have expired. Tap “Forget my token” and set it up again.";
@@ -154,15 +189,22 @@ $("go").onclick = async () => {
       let base = slug(files.length === 1 && $("title").value.trim() ? $("title").value : f.name.replace(/\.[^.]+$/, "")) || "picture";
       if (files.length === 1 && $("title").value.trim() && !base.startsWith(topic)) base = topic + "-" + base;
       say("Uploading " + (done + 1) + " of " + files.length + "…");
-      let b64;
-      try { b64 = await toB64(f); }
+      let b64, ext2 = ext;
+      try {
+        const mb = (f.size / 1048576).toFixed(1);
+        if (f.size > 3 * 1024 * 1024) say("Shrinking your " + mb + " MB picture so it uploads reliably\u2026");
+        const prep = await prepare(f, ext);
+        ext2 = prep.ext;
+        b64 = await toB64(prep.blob);
+        say("Uploading " + (done + 1) + " of " + files.length + (prep.shrunk ? " (shrunk to " + (prep.blob.size / 1048576).toFixed(1) + " MB)" : "") + "\u2026");
+      }
       catch (e) {
         say("Your phone would not let this page read \u201c" + f.name + "\u201d. It may be stored only online (Google Photos or Drive) or still saving. Open it in your gallery, save or download a copy onto your phone, then choose that copy and try again.", "err");
         $("go").disabled = false; return;
       }
       let name = base;
       for (let t = 0; t < 4; t++) {
-        const chk = await api("GET", "/contents/incoming/" + topic + "/" + name + "." + ext + "?ref=" + encodeURIComponent(BRANCH));
+        const chk = await api("GET", "/contents/incoming/" + topic + "/" + name + "." + ext2 + "?ref=" + encodeURIComponent(BRANCH));
         if (chk.status === 404) break;
         if (chk.status === 200) { name = base + "-" + Math.random().toString(36).slice(2, 6); continue; }
         say(explain(chk), "err"); $("go").disabled = false; return;
@@ -172,11 +214,16 @@ $("go").onclick = async () => {
         const r2 = await put("incoming/" + topic + "/" + name + ".txt", textB64(desc + "\n"), "Add description for " + name);
         if (!r2.ok) { say("The description did not save. " + explain(r2), "err"); $("go").disabled = false; return; }
       }
-      const res = await put("incoming/" + topic + "/" + name + "." + ext, b64, "Upload " + name + "." + ext + " from the upload page");
+      const res = await put("incoming/" + topic + "/" + name + "." + ext2, b64, "Upload " + name + "." + ext2 + " from the upload page");
       if (!res.ok) { say(explain(res), "err"); $("go").disabled = false; return; }
       done++;
     }
-  } catch (e) { say("Something went wrong: " + e.message, "err"); $("go").disabled = false; return; }
+  } catch (e) {
+    const net = e instanceof TypeError || /fetch|network/i.test(String(e.message));
+    say(net ? "Could not reach GitHub. Your connection dropped, or the picture was too big for it. Try again, ideally on Wi-Fi."
+            : "Something went wrong: " + e.message, "err");
+    $("go").disabled = false; return;
+  }
   $("go").disabled = false;
   if (done) {
     say("Done! " + done + " picture" + (done > 1 ? "s" : "") + " uploaded. The robot is working on it now. " +
