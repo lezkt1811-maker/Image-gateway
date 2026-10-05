@@ -27,5 +27,9 @@
 <footer class="site-footer">
   <p>&copy; {{year}} {{site_name}}. {{site_description}}.</p>
 </footer>
+<script>
+// Show the Upload button only on a device where the owner has saved their upload token.
+try { if (localStorage.getItem("imageRobotToken")) document.getElementById("uploadLink").hidden = false; } catch (e) {}
+</script>
 </body>
 </html>

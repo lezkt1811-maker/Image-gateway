@@ -180,7 +180,8 @@ def main():
         d = OUT / rel_dir
         d.mkdir(parents=True, exist_ok=True)
         base_vals = dict(site_name=esc(name), site_description=esc(desc), year=year,
-                         base=base, nav=f'<a href="{base}/">All artwork</a>',
+                         base=base, nav=(f'<a href="{base}/">All artwork</a>'
+                         f'<a id="uploadLink" class="nav-upload" href="{base}/upload/" hidden>+ Upload</a>'),
                          og_type="website", og_image="", jsonld="")
         base_vals.update(kw)
         (d / "index.html").write_text(render("base.html", base_vals), encoding="utf-8")
