@@ -1,97 +1,115 @@
 :root{
-  --bg:#050308;--fg:#fff1e3;--muted:#e0b48f;--accent:#ff6a00;--accent2:#ff9d2e;
-  --card:#120a07;--line:rgba(255,106,0,.38);--glow:rgba(255,106,0,.55);
+  /* BLUENEON palette */
+  --blue:#2563FF;--cyan:#22D3EE;--indigo:#6366F1;--violet:#A855F7;--magenta:#FF2ED1;--bg:#070B14;
+  --fg:#E9EFFF;--muted:#9DB0DE;--card:#0A1124;--line:rgba(34,211,238,.38);--glow:rgba(37,99,255,.65);
+  --g-blue-cyan:linear-gradient(90deg,#2563FF,#22D3EE);
+  --g-indigo-violet:linear-gradient(90deg,#6366F1,#A855F7);
+  --g-violet-magenta:linear-gradient(90deg,#A855F7,#FF2ED1);
+  --head:"Orbitron","Eurostile","Segoe UI",system-ui,sans-serif;
+  --body:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box}
-html{background:var(--bg)}
-body{margin:0;background:transparent;color:var(--fg);font:18px/1.6 Georgia,"Times New Roman",serif;position:relative;min-height:100vh}
+html{background:radial-gradient(900px 500px at 15% -5%,rgba(37,99,255,.22),transparent 70%),radial-gradient(800px 500px at 100% 0%,rgba(168,85,247,.20),transparent 70%),var(--bg)}
+body{margin:0;background:transparent;color:var(--fg);font:17px/1.65 var(--body);position:relative;min-height:100vh}
 
-/* night sky: two layers of tiny stars, the second one twinkles */
+/* night sky: two layers of tiny neon stars, the second one twinkles */
 body::before,body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none}
 body::before{
   background-image:
-   radial-gradient(1.8px 1.8px at 289px 227px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 289px 227px,#bfe9ff,transparent 60%),
    radial-gradient(1.8px 1.8px at 228px 168px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 185px 142px,#ff9d2e,transparent 60%),
-   radial-gradient(1.8px 1.8px at 291px 77px,#ff9d2e,transparent 60%),
+   radial-gradient(1.8px 1.8px at 185px 142px,#22D3EE,transparent 60%),
+   radial-gradient(1.8px 1.8px at 291px 77px,#22D3EE,transparent 60%),
    radial-gradient(1.8px 1.8px at 235px 282px,#fff,transparent 60%),
    radial-gradient(1.8px 1.8px at 158px 111px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 275px 190px,#ffd2a6,transparent 60%),
-   radial-gradient(1.8px 1.8px at 198px 243px,#ffd2a6,transparent 60%),
+   radial-gradient(1.8px 1.8px at 275px 190px,#bfe9ff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 198px 243px,#bfe9ff,transparent 60%),
    radial-gradient(1.4px 1.4px at 151px 210px,#fff,transparent 60%),
    radial-gradient(1.8px 1.8px at 259px 289px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 128px 107px,#ffd2a6,transparent 60%),
-   radial-gradient(1.4px 1.4px at 75px 45px,#ff9d2e,transparent 60%),
+   radial-gradient(1.8px 1.8px at 128px 107px,#bfe9ff,transparent 60%),
+   radial-gradient(1.4px 1.4px at 75px 45px,#22D3EE,transparent 60%),
    radial-gradient(2.2px 2.2px at 245px 207px,#fff,transparent 60%),
    radial-gradient(1.8px 1.8px at 225px 30px,#fff,transparent 60%),
-   radial-gradient(1.4px 1.4px at 80px 262px,#ff9d2e,transparent 60%),
-   radial-gradient(1.8px 1.8px at 137px 89px,#ff9d2e,transparent 60%),
+   radial-gradient(1.4px 1.4px at 80px 262px,#22D3EE,transparent 60%),
+   radial-gradient(1.8px 1.8px at 137px 89px,#22D3EE,transparent 60%),
    radial-gradient(1.8px 1.8px at 136px 187px,#fff,transparent 60%),
    radial-gradient(1.4px 1.4px at 199px 274px,#fff,transparent 60%),
    radial-gradient(1.8px 1.8px at 129px 262px,#fff,transparent 60%),
-   radial-gradient(2.2px 2.2px at 29px 27px,#ffd2a6,transparent 60%),
-   radial-gradient(2.2px 2.2px at 182px 101px,#ffd2a6,transparent 60%),
-   radial-gradient(1.8px 1.8px at 106px 92px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 123px 93px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 227px 286px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 233px 183px,#fff,transparent 60%),
-   radial-gradient(2.2px 2.2px at 277px 9px,#fff,transparent 60%);
+   radial-gradient(2.2px 2.2px at 29px 27px,#bfe9ff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 182px 101px,#bfe9ff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 106px 92px,#A855F7,transparent 60%),
+   radial-gradient(1.8px 1.8px at 65px 123px,#fff,transparent 60%),
+   radial-gradient(1.8px 1.8px at 43px 227px,#A855F7,transparent 60%),
+   radial-gradient(1.8px 1.8px at 286px 27px,#22D3EE,transparent 60%),
+   radial-gradient(2.2px 2.2px at 183px 55px,#A855F7,transparent 60%);
   background-size:300px 300px;
 }
 body::after{
   background-image:
-   radial-gradient(2.2px 2.2px at 171px 179px,#fff,transparent 60%),
-   radial-gradient(1.8px 1.8px at 262px 294px,#ff9d2e,transparent 60%),
-   radial-gradient(2.2px 2.2px at 272px 250px,#fff,transparent 60%),
-   radial-gradient(2.2px 2.2px at 350px 114px,#ffd2a6,transparent 60%),
-   radial-gradient(2.2px 2.2px at 24px 200px,#ff9d2e,transparent 60%),
-   radial-gradient(2.6px 2.6px at 373px 88px,#ff9d2e,transparent 60%),
-   radial-gradient(2.6px 2.6px at 82px 140px,#ffd2a6,transparent 60%),
-   radial-gradient(2.6px 2.6px at 358px 118px,#ffd2a6,transparent 60%),
-   radial-gradient(1.8px 1.8px at 225px 309px,#fff,transparent 60%),
-   radial-gradient(2.2px 2.2px at 190px 133px,#ff9d2e,transparent 60%),
-   radial-gradient(2.6px 2.6px at 155px 227px,#fff,transparent 60%),
-   radial-gradient(2.2px 2.2px at 336px 187px,#ffd2a6,transparent 60%),
-   radial-gradient(1.8px 1.8px at 27px 170px,#ffd2a6,transparent 60%),
-   radial-gradient(1.8px 1.8px at 243px 52px,#fff,transparent 60%);
+   radial-gradient(1.8px 1.8px at 26px 10px,#A855F7,transparent 60%),
+   radial-gradient(1.8px 1.8px at 179px 87px,#FF2ED1,transparent 60%),
+   radial-gradient(2.2px 2.2px at 294px 280px,#FF2ED1,transparent 60%),
+   radial-gradient(1.8px 1.8px at 122px 350px,#22D3EE,transparent 60%),
+   radial-gradient(2.2px 2.2px at 159px 24px,#FF2ED1,transparent 60%),
+   radial-gradient(2.2px 2.2px at 264px 373px,#22D3EE,transparent 60%),
+   radial-gradient(2.2px 2.2px at 386px 82px,#A855F7,transparent 60%),
+   radial-gradient(2.6px 2.6px at 225px 358px,#22D3EE,transparent 60%),
+   radial-gradient(2.6px 2.6px at 140px 225px,#22D3EE,transparent 60%),
+   radial-gradient(2.6px 2.6px at 190px 133px,#A855F7,transparent 60%),
+   radial-gradient(1.8px 1.8px at 227px 112px,#A855F7,transparent 60%),
+   radial-gradient(2.2px 2.2px at 225px 27px,#A855F7,transparent 60%),
+   radial-gradient(2.6px 2.6px at 211px 243px,#fff,transparent 60%),
+   radial-gradient(2.2px 2.2px at 43px 396px,#fff,transparent 60%);
   background-size:410px 410px;
   animation:twinkle 6s ease-in-out infinite alternate;
 }
 @keyframes twinkle{from{opacity:.25}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){body::after{animation:none}}
 
-a{color:var(--accent2)}
-a:hover{color:#fff;text-shadow:0 0 10px var(--glow)}
+a{color:var(--cyan)}
+a:hover{color:#fff;text-shadow:0 0 10px var(--cyan)}
 .site-header,.site-footer{padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-.brand{font-size:1.2rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;color:var(--accent);text-shadow:0 0 6px var(--glow),0 0 18px rgba(255,106,0,.35)}
+.brand{font:700 1.05rem var(--head);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--cyan)}
+@supports (-webkit-background-clip:text) or (background-clip:text){
+  .brand,h1{background:linear-gradient(90deg,#22D3EE,#2563FF 35%,#A855F7 70%,#FF2ED1);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+}
+.brand{filter:drop-shadow(0 0 8px rgba(37,99,255,.75))}
+.site-header nav{display:flex;align-items:center;gap:.4rem}
 .site-header nav a{margin-left:1rem}
 
-/* crystal / moon / diamond / star divider */
+/* crystal / moon / diamond / star divider in neon gradient */
 .site-header::after,.site-footer::before{
   content:"";display:block;width:100%;height:28px;flex-basis:100%;order:9;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='28' viewBox='0 0 260 28' fill='none' stroke='%23ff6a00' stroke-width='1.3' stroke-linejoin='round' stroke-linecap='round'%3E%3Cpath d='M26 4a10 10 0 1 0 0 20a8 8 0 1 1 0-20z'/%3E%3Cpath d='M70 3l2.2 8.8L81 14l-8.8 2.2L70 25l-2.2-8.8L59 14l8.8-2.2z'/%3E%3Cpath d='M115 5l8 9-8 9-8-9zM107 14h16M115 5l-4 9 4 9 4-9z'/%3E%3Cpath d='M165 3l7 6v10l-7 6-7-6V9zM158 9h14M165 3l-4 6 4 16 4-16z'/%3E%3Cpath d='M215 8l1.4 4.6L221 14l-4.6 1.4L215 20l-1.4-4.6L209 14l4.6-1.4z'/%3E%3Cpath d='M245 8a6 6 0 1 0 0 12a4.6 4.6 0 1 1 0-12z'/%3E%3C/svg%3E") repeat-x center;
-  filter:drop-shadow(0 0 4px var(--glow));opacity:.9;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='28' viewBox='0 0 260 28' fill='none' stroke='url(%23g)' stroke-width='1.3' stroke-linejoin='round' stroke-linecap='round'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='0' x2='260' y2='0'%3E%3Cstop offset='0' stop-color='%2322D3EE'/%3E%3Cstop offset='.5' stop-color='%23A855F7'/%3E%3Cstop offset='1' stop-color='%23FF2ED1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M26 4a10 10 0 1 0 0 20a8 8 0 1 1 0-20z'/%3E%3Cpath d='M70 3l2.2 8.8L81 14l-8.8 2.2L70 25l-2.2-8.8L59 14l8.8-2.2z'/%3E%3Cpath d='M115 5l8 9-8 9-8-9zM107 14h16M115 5l-4 9 4 9 4-9z'/%3E%3Cpath d='M165 3l7 6v10l-7 6-7-6V9zM158 9h14M165 3l-4 6 4 16 4-16z'/%3E%3Cpath d='M215 8l1.4 4.6L221 14l-4.6 1.4L215 20l-1.4-4.6L209 14l4.6-1.4z'/%3E%3Cpath d='M245 8a6 6 0 1 0 0 12a4.6 4.6 0 1 1 0-12z'/%3E%3C/svg%3E") repeat-x center;
+  filter:drop-shadow(0 0 4px rgba(34,211,238,.7));opacity:.95;
 }
 .site-footer{color:var(--muted);font-size:.85rem;justify-content:center;margin-top:3rem;text-align:center}
 .site-footer p{margin:0;flex-basis:100%}
 .site-footer::before{order:-1}
 
 main{max-width:1000px;margin:0 auto;padding:0 1.25rem}
-.topic{text-transform:uppercase;letter-spacing:.2em;font-size:.8rem;color:var(--accent2);margin:1.5rem 0 0;text-shadow:0 0 8px var(--glow)}
+/* small spaced-out section labels, like COLOR PALETTE on the sheet */
+.topic,.related h2{font:600 .78rem var(--head);text-transform:uppercase;letter-spacing:.3em;color:var(--cyan);margin:1.6rem 0 0;display:flex;align-items:center;gap:.8rem}
+.topic::after,.related h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.related h2{margin-top:2.6rem}
 .crumbs{font-size:.85rem;color:var(--muted);margin:1rem 0 0}
-h1{font-weight:normal;font-size:2rem;line-height:1.2;margin:.3rem 0 1rem;color:#fff;text-shadow:0 0 8px var(--glow),0 0 28px rgba(255,106,0,.3)}
+h1{font:700 clamp(1.5rem,6vw,2.3rem)/1.2 var(--head);letter-spacing:.04em;text-transform:uppercase;margin:.6rem 0 1.1rem;color:#fff;filter:drop-shadow(0 0 12px rgba(37,99,255,.6))}
 figure{margin:0}
-figure img{width:100%;height:auto;display:block;border-radius:6px;box-shadow:0 0 0 1px var(--line),0 0 32px rgba(255,106,0,.28)}
-figcaption{color:var(--muted);font-size:.9rem;margin-top:.8rem}
+figure img{width:100%;height:auto;display:block;border-radius:12px;box-shadow:0 0 0 1px var(--line),0 0 34px rgba(37,99,255,.45),0 0 70px rgba(168,85,247,.2)}
+figcaption{color:var(--muted);font-size:.9rem;margin-top:.9rem}
 .text{max-width:680px}
-.lead{font-size:1.15rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;text-decoration:none;color:var(--fg);transition:box-shadow .2s,border-color .2s}
-.card:hover{border-color:var(--accent);box-shadow:0 0 22px var(--glow)}
+.lead{font-size:1.12rem}
+.links a{font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.1rem;margin-top:1.1rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;text-decoration:none;color:var(--fg);transition:box-shadow .2s,border-color .2s,transform .2s}
+.card:hover{border-color:var(--magenta);box-shadow:0 0 26px rgba(37,99,255,.6),0 0 40px rgba(255,46,209,.25);transform:translateY(-2px);text-shadow:none}
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
-.card span{display:block;padding:.6rem .8rem;font-size:.9rem}
-.related h2{font-weight:normal;font-size:1.2rem;margin-top:2.5rem;color:var(--accent2);text-shadow:0 0 8px var(--glow)}
-.site-header nav{display:flex;align-items:center;gap:.4rem}
-.nav-upload{background:var(--accent);color:#120600!important;padding:.35rem .9rem;border-radius:6px;text-decoration:none;font-weight:bold;font-size:.95rem;box-shadow:0 0 14px var(--glow);margin-left:.8rem}
+.card span{display:block;padding:.7rem .9rem;font-size:.9rem;font-weight:600}
+
+/* buttons, as on the sheet */
+.nav-upload,.btn-primary{background:linear-gradient(180deg,#3B79FF,#2563FF);color:#fff!important;border:1px solid var(--cyan);padding:.4rem 1rem;border-radius:10px;text-decoration:none;font:600 .9rem var(--body);box-shadow:0 0 16px var(--glow),inset 0 0 12px rgba(34,211,238,.25)}
+.nav-upload{margin-left:.8rem}
 .nav-upload[hidden]{display:none}
-.nav-upload:hover{background:var(--accent2);text-shadow:none}
+.nav-upload:hover,.btn-primary:hover{text-shadow:none;box-shadow:0 0 24px var(--cyan),inset 0 0 14px rgba(34,211,238,.4)}
+.btn-accent{background:var(--g-violet-magenta);color:#fff!important;border:0;padding:.45rem 1.1rem;border-radius:10px;font:600 .9rem var(--body);box-shadow:0 0 18px rgba(255,46,209,.5)}
+.btn-ghost{background:transparent;color:var(--fg)!important;border:1px solid var(--line);padding:.45rem 1.1rem;border-radius:10px;font:600 .9rem var(--body)}

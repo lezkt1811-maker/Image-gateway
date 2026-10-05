@@ -5,17 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Upload artwork | {{site_name}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#070B14">
 <link rel="stylesheet" href="{{base}}/style.css">
 <style>
-*{box-sizing:border-box}
- label{display:block;margin:1.1rem 0 .3rem;color:var(--muted);font-size:.9rem}
- input[type=text],input[type=password],select,textarea{width:100%;padding:.7rem;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:1rem}
+ label{display:block;margin:1.1rem 0 .3rem;color:var(--cyan);font:600 .72rem var(--head);letter-spacing:.22em;text-transform:uppercase}
+ input[type=text],input[type=password],select,textarea{width:100%;padding:.75rem;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:1rem}
+ input[type=text]:focus,input[type=password]:focus,select:focus,textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.25),0 0 18px rgba(37,99,255,.5)}
+ input[type=file]{color:var(--fg);max-width:100%}
  textarea{min-height:5rem}
- button{box-shadow:0 0 18px var(--glow);margin-top:1.4rem;padding:.9rem 1.4rem;border:0;border-radius:6px;background:var(--accent);color:#120600;font:inherit;font-weight:bold;font-size:1.05rem;width:100%}
- button.link{box-shadow:none;background:none;color:var(--muted);text-decoration:underline;width:auto;font-weight:normal;font-size:.85rem;padding:0;margin-top:1.5rem}
+ button{margin-top:1.4rem;padding:.9rem 1.4rem;border:1px solid var(--cyan);border-radius:10px;background:linear-gradient(180deg,#3B79FF,#2563FF);color:#fff;font:600 1.05rem var(--body);width:100%;box-shadow:0 0 18px var(--glow),inset 0 0 12px rgba(34,211,238,.25)}
+ button.link{background:none;border:0;box-shadow:none;color:var(--muted);text-decoration:underline;width:auto;font-weight:400;font-size:.85rem;padding:0;margin-top:1.5rem}
  button[disabled]{opacity:.5}
- #status{margin-top:1.2rem;padding:.8rem 1rem;border-radius:6px;background:var(--card);display:none}
- #status.err{border-left:4px solid #ff7b7b} #status.ok{border-left:4px solid #7be0a0}
+ #status{margin-top:1.2rem;padding:.8rem 1rem;border-radius:10px;background:var(--card);display:none;border:1px solid var(--line)}
+ #status.err{border-left:4px solid var(--magenta)} #status.ok{border-left:4px solid var(--cyan)}
  ol{padding-left:1.2rem} li{margin:.4rem 0}
  .note{color:var(--muted);font-size:.85rem}
 </style>
