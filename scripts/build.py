@@ -4,7 +4,9 @@
 Run by GitHub every time you upload. Needs only Python + Pillow (both free).
 """
 import hashlib, html, json, re, shutil, subprocess, sys
-from datetime import date
+from datetime import date, datetime, timezone
+from email.utils import format_datetime
+from xml.sax.saxutils import escape as xml_escape
 from pathlib import Path
 from urllib.parse import urlparse
 from PIL import Image, ImageOps
@@ -80,6 +82,18 @@ def last_modified(path):
     except OSError:
         pass
     return date.today().isoformat()
+
+
+def first_added(path):
+    """When the picture was first added to the project (stable, so feed dates never change)."""
+    try:
+        out = subprocess.run(["git", "log", "--follow", "--diff-filter=A", "--format=%aI", "--", str(path)],
+                             cwd=ROOT, capture_output=True, text=True).stdout.split()
+        if out:
+            return datetime.fromisoformat(out[-1]).astimezone(timezone.utc)
+    except (OSError, ValueError):
+        pass
+    return datetime.fromtimestamp(Path(path).stat().st_mtime, timezone.utc)
 
 
 def make_web_images(src, dest_dir, slug):
@@ -162,7 +176,8 @@ def main():
             w, h = make_web_images(src, OUT / "images" / cat, slug)
             pages.append(dict(cat=cat, info=info, slug=slug, title=title, alt=alt,
                               description=description, w=w, h=h,
-                              lastmod=last_modified(src),
+                              lastmod=last_modified(src), added=first_added(src),
+                              nbytes=(OUT / 'images' / cat / f'{slug}.jpg').stat().st_size,
                               url=f"{base}/{cat}/{slug}/",
                               img=f"{base}/images/{cat}/{slug}.jpg",
                               thumb=f"{base}/images/{cat}/{slug}-thumb.jpg"))
@@ -176,13 +191,18 @@ def main():
     main_link = (f'<p class="links"><a href="{esc(main_url)}">Visit {esc(name)}</a></p>'
                  if main_url else "")
 
+    verify = site.get("pinterest_verify", "").strip()
+    verify_meta = f'<meta name="p:domain_verify" content="{esc(verify)}">' if verify else ""
+    feed_link = f'<link rel="alternate" type="application/rss+xml" title="{esc(name)}" href="{base}/feed.xml">'
+
     def page(rel_dir, **kw):
         d = OUT / rel_dir
         d.mkdir(parents=True, exist_ok=True)
         base_vals = dict(site_name=esc(name), site_description=esc(desc), year=year,
                          base=base, nav=(f'<a href="{base}/">All artwork</a>'
                          f'<a id="uploadLink" class="nav-upload" href="{base}/upload/" hidden>+ Upload</a>'),
-                         og_type="website", og_image="", jsonld="")
+                         og_type="website", og_image="", jsonld="",
+                         verify_meta=verify_meta, feed_link=feed_link)
         base_vals.update(kw)
         (d / "index.html").write_text(render("base.html", base_vals), encoding="utf-8")
 
@@ -273,6 +293,42 @@ def main():
         + "\n".join(urls) + "\n</urlset>\n", encoding="utf-8")
     (OUT / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\n\nSitemap: {site_url}/sitemap.xml\n", encoding="utf-8")
+    # ---- 5. RSS feed for Pinterest auto-publish (RSS 2.0) -------------------
+    def clip(text, limit):
+        text = " ".join(text.split())
+        return text if len(text) <= limit else text[:limit].rsplit(" ", 1)[0].rstrip(",;: ") + "\u2026"
+
+    ordered = sorted(pages, key=lambda p: p["added"], reverse=True)
+    items = []
+    for p in ordered:
+        link, img = origin + p["url"], origin + p["img"]
+        title = xml_escape(clip(p["title"], 100))
+        items.append(
+            "    <item>\n"
+            f"      <title>{title}</title>\n"
+            f"      <link>{link}</link>\n"
+            f'      <guid isPermaLink="true">{link}</guid>\n'
+            f"      <pubDate>{format_datetime(p['added'])}</pubDate>\n"
+            f"      <description>{xml_escape(clip(p['description'], 500))}</description>\n"
+            f"      <category>{xml_escape(p['info']['title'])}</category>\n"
+            f'      <enclosure url="{img}" length="{p["nbytes"]}" type="image/jpeg"/>\n'
+            f'      <media:content url="{img}" medium="image" type="image/jpeg" width="{p["w"]}" height="{p["h"]}">\n'
+            f"        <media:title>{title}</media:title>\n"
+            "      </media:content>\n"
+            "    </item>")
+    newest = format_datetime(ordered[0]["added"]) if ordered else format_datetime(datetime.now(timezone.utc))
+    (OUT / "feed.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/" xmlns:atom="http://www.w3.org/2005/Atom">\n'
+        "  <channel>\n"
+        f"    <title>{xml_escape(name)}</title>\n"
+        f"    <link>{site_url}/</link>\n"
+        f"    <description>{xml_escape(desc)}</description>\n"
+        "    <language>en-us</language>\n"
+        f"    <lastBuildDate>{newest}</lastBuildDate>\n"
+        f'    <atom:link href="{site_url}/feed.xml" rel="self" type="application/rss+xml"/>\n'
+        + "\n".join(items) + "\n  </channel>\n</rss>\n", encoding="utf-8")
+
     (OUT / ".nojekyll").write_text("")
     print(f"Done: {len(pages)} page(s) built in site/")
 

@@ -51,3 +51,11 @@ It does not guarantee Google rankings. It makes your picture and its page easy f
 
 ## For the curious
 `scripts/build.py` does the work; `config/categories.json` holds topic descriptions; `templates/` holds the page look. The finished website is built fresh in the cloud each time and is not stored in the repository.
+
+## Pinterest (automatic pins)
+The site publishes a feed at `your-site-address/feed.xml`. Every picture you upload is added to it automatically (title, description, picture and page link). Pinterest's own **auto-publish from RSS** feature reads that feed and makes a pin for each new picture within about a day, up to 200 a day. Pinterest needs a business account and a **claimed website**, so the feed must live on an address you own (planned: `art.starchart13.com`). Set-up steps are in the chat history; the short version:
+1. Point `art.starchart13.com` at the gallery (a `CNAME` record named `art` pointing to `lezkt1811-maker.github.io`), then set the custom domain in GitHub Settings -> Pages.
+2. Change `site_url` in `config/site.json` to `https://art.starchart13.com`.
+3. In Pinterest, claim the address (HTML-tag method), paste the code into `pinterest_verify` in `config/site.json`.
+4. In Pinterest, connect `https://art.starchart13.com/feed.xml` to a board. Test with a secret board first.
+Each build checks the feed against Pinterest's rules and shows a warning in the Actions tab if something is wrong.
