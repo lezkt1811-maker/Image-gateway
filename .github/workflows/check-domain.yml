@@ -1,0 +1,45 @@
+name: Check art.starchart13.com
+
+# Run by hand (Actions tab -> "Check art.starchart13.com" -> Run workflow).
+# Each check is its own job so you can see exactly which part passes or fails.
+on: workflow_dispatch
+
+jobs:
+  dns-points-at-github:
+    name: "1. DNS - art.starchart13.com points at GitHub Pages"
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          python3 - <<'PY'
+          import socket, sys
+          name, ips = socket.gethostbyname_ex("art.starchart13.com")[0], socket.gethostbyname_ex("art.starchart13.com")[2]
+          print("name:", name, "addresses:", ips)
+          ok = [ip for ip in ips if ip.startswith("185.199.") and ip.split(".")[2] in ("108","109","110","111")]
+          sys.exit(0 if ok else 1)
+          PY
+  https-answers:
+    name: "2. WEB - https://art.starchart13.com/ loads (GitHub custom domain + certificate)"
+    runs-on: ubuntu-24.04
+    steps:
+      - run: curl -fsS -o /dev/null --max-time 30 -w "HTTP %{http_code}\n" https://art.starchart13.com/
+  feed-loads:
+    name: "3. FEED - https://art.starchart13.com/feed.xml is RSS"
+    runs-on: ubuntu-24.04
+    steps:
+      - run: curl -fsS --max-time 30 https://art.starchart13.com/feed.xml | head -c 400 | grep -q '<rss version="2.0"'
+  main-site-dns:
+    name: "4. MAIN SITE - starchart13.com still points where it did"
+    runs-on: ubuntu-24.04
+    steps:
+      - run: |
+          python3 - <<'PY'
+          import socket, sys
+          ips = socket.gethostbyname_ex("starchart13.com")[2]
+          print("starchart13.com ->", ips)
+          sys.exit(0 if any(ip.startswith("185.199.") for ip in ips) else 1)
+          PY
+  main-site-web:
+    name: "5. MAIN SITE - https://starchart13.com/ still answers"
+    runs-on: ubuntu-24.04
+    steps:
+      - run: curl -sS -L -o /dev/null --max-time 30 -w "HTTP %{http_code}\n" https://starchart13.com/ | tee /dev/stderr | grep -qE 'HTTP (2|3)'
