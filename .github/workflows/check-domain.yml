@@ -43,3 +43,8 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - run: curl -sS -L -o /dev/null --max-time 30 -w "HTTP %{http_code}\n" https://starchart13.com/ | tee /dev/stderr | grep -qE 'HTTP (2|3)'
+  pinterest-claim-tag:
+    name: "6. PINTEREST - the claim tag is on https://art.starchart13.com/"
+    runs-on: ubuntu-24.04
+    steps:
+      - run: curl -fsS --max-time 30 "https://art.starchart13.com/?t=$(date +%s)" | grep -q '<meta name="p:domain_verify" content="8d29a7c8dd9c35d4da23b02111ef2cac">'
