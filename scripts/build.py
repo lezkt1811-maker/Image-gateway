@@ -200,7 +200,7 @@ def main():
         d.mkdir(parents=True, exist_ok=True)
         base_vals = dict(site_name=esc(name), site_description=esc(desc), year=year,
                          base=base, nav=(f'<a href="{base}/">All artwork</a>'
-                         f'<a id="uploadLink" class="nav-upload" href="{base}/upload/" hidden>+ Upload</a>'),
+                         f'<a id="uploadLink" class="nav-upload" href="{base}/upload/">+ Upload</a>'),
                          og_type="website", og_image="", jsonld="",
                          verify_meta=verify_meta, feed_link=feed_link)
         base_vals.update(kw)
