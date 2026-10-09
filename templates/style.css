@@ -113,3 +113,4 @@ figcaption{color:var(--muted);font-size:.9rem;margin-top:.9rem}
 .nav-upload:hover,.btn-primary:hover{text-shadow:none;box-shadow:0 0 24px var(--cyan),inset 0 0 14px rgba(34,211,238,.4)}
 .btn-accent{background:var(--g-violet-magenta);color:#fff!important;border:0;padding:.45rem 1.1rem;border-radius:10px;font:600 .9rem var(--body);box-shadow:0 0 18px rgba(255,46,209,.5)}
 .btn-ghost{background:transparent;color:var(--fg)!important;border:1px solid var(--line);padding:.45rem 1.1rem;border-radius:10px;font:600 .9rem var(--body)}
+.artwork .links{display:flex;flex-wrap:wrap;gap:.8rem 1.2rem;align-items:center;margin-top:1.2rem}

@@ -2,7 +2,7 @@
   "site_name": "Lilith and Eve Astrology",
   "site_url": "https://art.starchart13.com",
   "site_description": "13-sign astrology and celestial exploration",
-  "main_site_url": "",
+  "main_site_url": "https://starchart13.com",
   "_help": "Change the three values above (and optionally main_site_url, the link back to your main website) any time. Every page is rebuilt with the new values on the next upload. site_url must be the address where these pages live, with no slash at the end. ai_model is the free Google AI model that writes picture descriptions; change it only if Google retires it. pinterest_verify is the code Pinterest gives you when you claim your website with the HTML tag method (leave it empty until then).",
   "ai_model": "gemini-2.5-flash-lite",
   "github_repo": "lezkt1811-maker/Image-gateway",

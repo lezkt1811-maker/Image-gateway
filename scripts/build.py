@@ -120,6 +120,7 @@ def main():
     site_url = site["site_url"].rstrip("/")
     base = urlparse(site_url).path.rstrip("/")
     main_url = site.get("main_site_url", "").strip()
+    main_host = urlparse(main_url).netloc or main_url
     year = date.today().year
 
     if OUT.exists():
@@ -188,7 +189,7 @@ def main():
 
     name, desc = site["site_name"], site["site_description"]
     origin = f"{urlparse(site_url).scheme}://{urlparse(site_url).netloc}"
-    main_link = (f'<p class="links"><a href="{esc(main_url)}">Visit {esc(name)}</a></p>'
+    main_link = (f'<p class="links"><a class="btn-primary" href="{esc(main_url)}">Visit {esc(main_host)} &rarr;</a></p>'
                  if main_url else "")
 
     verify = site.get("pinterest_verify", "").strip()
@@ -249,7 +250,7 @@ def main():
             title=esc(p["title"]), image_url=p["img"], alt=esc(p["alt"]),
             width=p["w"], height=p["h"], caption=esc(p["alt"]),
             description=esc(p["description"]), about_html=about,
-            main_link=(f' &middot; <a href="{esc(main_url)}">Visit {esc(name)}</a>' if main_url else ""),
+            main_link=(f' <a class="btn-primary" href="{esc(main_url)}">Visit {esc(main_host)} &rarr;</a>' if main_url else ""),
             related_html=related))
         og = (f'<meta property="og:image" content="{img_abs}">\n'
               f'<meta property="og:image:alt" content="{esc(p["alt"])}">\n'
