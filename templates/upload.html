@@ -23,6 +23,7 @@
  #status.err{border-left:4px solid var(--magenta)} #status.ok{border-left:4px solid var(--cyan)}
  ol{padding-left:1.2rem} li{margin:.4rem 0}
  .note{color:var(--muted);font-size:.85rem}
+ .warn{margin:1rem 0;padding:.9rem 1rem;border-radius:10px;background:var(--card);border:1px solid var(--magenta);border-left:4px solid var(--magenta)}
 </style>
 </head>
 <body>
@@ -30,8 +31,12 @@
 <main>
 <h1>Upload artwork</h1>
 
+<div id="inapp" class="warn" hidden>
+  <b>Open this page in Chrome.</b> You opened it inside another app (like Facebook or Messenger). That app can't remember your setup, so it would ask every time. Tap <b>⋮</b> (top right) → <b>Open in Chrome</b> or <b>Open in browser</b>.
+</div>
+
 <section id="setup" hidden>
-  <p class="lead">One-time setup. This lets this page add pictures for you. You only do this once on this phone.</p>
+  <p class="lead">One-time setup. This lets this page add pictures for you. You only do this once on this phone, as long as you open this page in the same browser (like Chrome).</p>
   <ol>
     <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">this GitHub page</a>.</li>
     <li>Name: <b>image robot</b>. Expiration: pick the longest.</li>
@@ -82,6 +87,13 @@ function say(msg, kind, html) {
   if (html) s.innerHTML = msg; else s.textContent = msg;
 }
 function show() { $("setup").hidden = !!tok; $("uploader").hidden = !tok; }
+// Apps like Facebook, Messenger and Instagram open links in their own mini-browser,
+// which keeps its own storage, so the saved setup is missing there.
+const IN_APP = /FBAN|FBAV|FB_IAB|FBIOS|Messenger|Instagram|Line\/|Snapchat|TikTok|musical_ly|Twitter|Pinterest\//i.test(navigator.userAgent || "");
+if (IN_APP) $("inapp").hidden = false;
+// Ask the browser not to clear this page's saved setup when the phone runs low on space.
+function keepForever() { try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {} }
+if (tok) keepForever();
 function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
 async function toB64(file) {
   let buf;
@@ -170,7 +182,9 @@ $("saveTok").onclick = async () => {
     if (!res.ok) { tok = ""; return say(explain(res), "err"); }
   } catch (e) { tok = ""; return say("Could not reach GitHub. Check your connection.", "err"); }
   try { localStorage.setItem(KEY, t); } catch (e) {}
-  $("tok").value = ""; $("status").style.display = "none"; show();
+  keepForever();
+  $("tok").value = ""; show();
+  say("Saved. This phone will remember it. Tip: tap ⋮ → Add to Home screen and always open this page from that icon.", "ok");
 };
 $("forget").onclick = () => { tok = ""; try { localStorage.removeItem(KEY); } catch (e) {} show(); $("status").style.display = "none"; };
 
