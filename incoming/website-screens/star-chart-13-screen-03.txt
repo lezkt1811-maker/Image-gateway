@@ -1,0 +1,3 @@
+Title: Star Chart 13 Website Aspect Table
+
+A digital table from the Star Chart 13 website lists astrological aspects with planet names, aspect types, and degrees. The rows display colored symbols and text detailing trines, sextiles, and squares between celestial bodies. At the bottom, a rounded button displays the text SHARE MY CHART.

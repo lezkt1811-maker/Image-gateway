@@ -1,0 +1,3 @@
+Title: Star Chart 13 Data Entry Form
+
+The Star Chart 13 interface features input fields for a user's name, birth city, date, and exact birth time. Below these fields are buttons for advanced options, including toggles for planets and chart comparison, alongside a prominent button to create a free chart.

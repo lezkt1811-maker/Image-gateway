@@ -1,0 +1,3 @@
+Title: Star Chart 13 Planetary Table
+
+This list shows the positions of planetary bodies and astrological points on a dark background. Each entry displays a house number, the name of the planet, its numerical degree, an astrological symbol, the zodiac sign, and sometimes a retrograde marker.
