@@ -1,4 +1,14 @@
 {
+  "website-screens": {
+    "title": "Star Chart 13 Website",
+    "headline": "Star Chart 13: Website Screens",
+    "default_slug": "star-chart-13-website",
+    "alt_default": "Screenshot of the Star Chart 13 website showing true-sky astrology charts and readings.",
+    "summary": "Screenshots from the Star Chart 13 website: the free true-sky chart, the constellation sky view, and the reading options.",
+    "about": [
+      "Star Chart 13 calculates birth charts against the real constellations the ecliptic passes through, including Ophiuchus."
+    ]
+  },
   "ophiuchus": {
     "title": "Ophiuchus",
     "headline": "Ophiuchus: The 13th Zodiac Sign",
