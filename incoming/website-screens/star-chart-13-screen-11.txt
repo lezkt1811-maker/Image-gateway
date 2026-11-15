@@ -1,0 +1,3 @@
+Title: Star Chart 13 Ecliptic Sky View
+
+A digital interface displays an ecliptic sky view with constellations like Virgo, Libra, Scorpio, Ophiuchus, and Sagittarius. The chart features interactive buttons including Refresh Sky to Right Now, Center on Sun, Reset View, and Play. Additional interface text guides users to tap planets and verify against a real sky map app.
